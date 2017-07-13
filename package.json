@@ -1,0 +1,11 @@
+{
+  "name": "tc2017-contract-artifacts",
+  "version": "1.0.0",
+  "description": "Truffle artifacts describing contracts deployed to the That Conference 2017 blockchain Edit",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
