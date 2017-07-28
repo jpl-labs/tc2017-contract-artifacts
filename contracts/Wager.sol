@@ -26,6 +26,8 @@ contract Wager {
             return;
         }
 
+        rounds[roundNumber].songData = songData;
+
         if(rounds[roundNumber].bets[artist].length == 0) {
             roundNumber++;
             rounds[roundNumber].pot = rounds[roundNumber - 1].pot;
@@ -40,7 +42,6 @@ contract Wager {
         }
 
         rounds[roundNumber].isRoundCashed = true;
-        rounds[roundNumber].songData = songData;
         roundNumber++;
         RoundOver(rounds[roundNumber].bets[artist], string(songData), payout, this.balance, rounds[roundNumber].pot);
     }
