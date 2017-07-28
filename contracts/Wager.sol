@@ -58,11 +58,14 @@ contract Wager {
     }
 
     function betFuture(bytes artist, uint numberOfRounds) payable {
-        if(msg.value/numberOfRounds != 1) {
+        var betVal = msg.value/numberOfRounds;
+
+        if(betVal != 1) {
             return;
         }
+        
         for(uint i = 0; i < numberOfRounds; i++) {
-          rounds[roundNumber + i].pot += msg.value;
+          rounds[roundNumber + i].pot += betVal;
           rounds[roundNumber + i].bets[artist].push(msg.sender);
           rounds[roundNumber + i].betCount++;
           BetPlaced(msg.sender, string(artist), roundNumber + i, rounds[roundNumber + i].pot);
