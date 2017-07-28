@@ -48,6 +48,7 @@ contract Wager {
 
     function bet(bytes artist) payable {
         if(msg.value != 1 ether) {
+            msg.sender.transfer(msg.value);
             return;
         }
 
@@ -60,10 +61,11 @@ contract Wager {
     function betFuture(bytes artist, uint numberOfRounds) payable {
         var betVal = msg.value/numberOfRounds;
 
-        if(betVal != 1) {
+        if(betVal != 1 ether) {
+            msg.sender.transfer(msg.value);
             return;
         }
-        
+
         for(uint i = 0; i < numberOfRounds; i++) {
           rounds[roundNumber + i].pot += betVal;
           rounds[roundNumber + i].bets[artist].push(msg.sender);
