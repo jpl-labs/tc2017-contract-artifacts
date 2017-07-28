@@ -22,42 +22,38 @@ contract Wager {
     }
 
     function endRound(bytes artist, bytes songData) onlyBy(owner) {
-        var thisRound = rounds[roundNumber];
-
-        if(thisRound.isRoundCashed) {
+        if(rounds[roundNumber].isRoundCashed) {
             return;
         }
 
-        if(thisRound.bets[artist].length == 0) {
+        if(rounds[roundNumber].bets[artist].length == 0) {
             roundNumber++;
-            rounds[roundNumber].pot = thisRound.pot;
-            RoundOver(thisRound.bets[artist], string(songData), 0, this.balance, thisRound.pot);
+            rounds[roundNumber].pot = rounds[roundNumber - 1].pot;
+            RoundOver(rounds[roundNumber].bets[artist], string(songData), 0, this.balance, rounds[roundNumber].pot);
             return;
         }
 
-        var payout = thisRound.pot/thisRound.bets[artist].length;
+        var payout = rounds[roundNumber].pot/rounds[roundNumber].bets[artist].length;
 
-        for(uint128 i = 0; i < thisRound.bets[artist].length; i++) {
-            thisRound.bets[artist][i].transfer(payout);
+        for(uint128 i = 0; i < rounds[roundNumber].bets[artist].length; i++) {
+            rounds[roundNumber].bets[artist][i].transfer(payout);
         }
 
-        thisRound.isRoundCashed = true;
-        thisRound.songData = songData;
+        rounds[roundNumber].isRoundCashed = true;
+        rounds[roundNumber].songData = songData;
         roundNumber++;
-        RoundOver(thisRound.bets[artist], string(songData), payout, this.balance, thisRound.pot);
+        RoundOver(rounds[roundNumber].bets[artist], string(songData), payout, this.balance, rounds[roundNumber].pot);
     }
 
     function bet(bytes artist) payable {
-        var thisRound = rounds[roundNumber];
-
         if(msg.value != 1 ether) {
             return;
         }
 
-        thisRound.pot += msg.value;
-        thisRound.bets[artist].push(msg.sender);
-        thisRound.betCount++;
-        BetPlaced(msg.sender, string(artist), roundNumber, thisRound.pot);
+        rounds[roundNumber].pot += msg.value;
+        rounds[roundNumber].bets[artist].push(msg.sender);
+        rounds[roundNumber].betCount++;
+        BetPlaced(msg.sender, string(artist), roundNumber, rounds[roundNumber].pot);
     }
 
     function betFuture(bytes artist, uint numberOfRounds) payable {
@@ -65,16 +61,14 @@ contract Wager {
             return;
         }
         for(uint i = 0; i < numberOfRounds; i++) {
-          var thisRound = rounds[roundNumber + i];
-
-          thisRound.pot += msg.value;
-          thisRound.bets[artist].push(msg.sender);
-          thisRound.betCount++;
-          BetPlaced(msg.sender, string(artist), roundNumber + i, thisRound.pot);
+          rounds[roundNumber + i].pot += msg.value;
+          rounds[roundNumber + i].bets[artist].push(msg.sender);
+          rounds[roundNumber + i].betCount++;
+          BetPlaced(msg.sender, string(artist), roundNumber + i, rounds[roundNumber + i].pot);
         }
     }
 
     function getLastSong() constant returns(bytes data) {
-        return rounds[roundNumber-1].songData;
+        return rounds[roundNumber - 1].songData;
     }
 }
