@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 contract Wager {
     event BetPlaced(address from, string artist, uint roundNum, uint totalPot);
-    event RoundOver(address[] winners, string songData, uint payout, uint contractBalance, uint totalPot);
+    event RoundOver(address[] winners, string songData, uint payout, uint roundNumber, uint totalPot);
 
     address public owner = msg.sender;
     uint public roundNumber;
@@ -30,8 +30,8 @@ contract Wager {
 
         if(rounds[roundNumber].bets[artist].length == 0) {
             roundNumber++;
-            rounds[roundNumber].pot = rounds[roundNumber - 1].pot;
-            RoundOver(rounds[roundNumber].bets[artist], string(songData), 0, this.balance, rounds[roundNumber].pot);
+            rounds[roundNumber].pot += rounds[roundNumber - 1].pot;
+            RoundOver(rounds[roundNumber].bets[artist], string(songData), 0, (roundNumber - 1), rounds[roundNumber].pot);
             return;
         }
 
@@ -43,7 +43,7 @@ contract Wager {
 
         rounds[roundNumber].isRoundCashed = true;
         roundNumber++;
-        RoundOver(rounds[roundNumber].bets[artist], string(songData), payout, this.balance, rounds[roundNumber].pot);
+        RoundOver(rounds[roundNumber].bets[artist], string(songData), payout, (roundNumber - 1), rounds[roundNumber].pot);
     }
 
     function bet(bytes artist) payable {
@@ -70,8 +70,8 @@ contract Wager {
           rounds[roundNumber + i].pot += betVal;
           rounds[roundNumber + i].bets[artist].push(msg.sender);
           rounds[roundNumber + i].betCount++;
-          BetPlaced(msg.sender, string(artist), roundNumber + i, rounds[roundNumber + i].pot);
         }
+        BetPlaced(msg.sender, string(artist), roundNumber, rounds[roundNumber].pot);
     }
 
     function getLastSong() constant returns(bytes data) {
