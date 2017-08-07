@@ -7,6 +7,7 @@ contract Wager {
     address public owner = msg.sender;
     uint public roundNumber;
     mapping(uint => Round) rounds;
+    uint public houseWager = 20;
 
     struct Round {
         mapping(bytes => address[]) bets;
@@ -21,6 +22,10 @@ contract Wager {
         _;
     }
 
+    function Wager() payable {
+
+    }
+
     function endRound(bytes artist, bytes songData) onlyBy(owner) {
         if(rounds[roundNumber].isRoundCashed) {
             return;
@@ -31,8 +36,11 @@ contract Wager {
         if(rounds[roundNumber].bets[artist].length == 0) {
             rounds[roundNumber].isRoundCashed = true;
             roundNumber++;
+            if(roundNumber % 10 == 0) {
+                houseWager++;
+            }
             rounds[roundNumber].pot += rounds[roundNumber - 1].pot;
-            rounds[roundNumber].pot += 5;
+            rounds[roundNumber].pot += houseWager;
             RoundOver(rounds[roundNumber].bets[artist], string(songData), 0, (roundNumber - 1), rounds[roundNumber].pot);
             return;
         }
@@ -45,7 +53,10 @@ contract Wager {
 
         rounds[roundNumber].isRoundCashed = true;
         roundNumber++;
-        rounds[roundNumber].pot += 5;
+        if(roundNumber % 10 == 0) {
+            houseWager++;
+        }
+        rounds[roundNumber].pot += houseWager;
         RoundOver(rounds[roundNumber].bets[artist], string(songData), payout, (roundNumber - 1), rounds[roundNumber].pot);
     }
 

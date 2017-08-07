@@ -10,6 +10,6 @@ module.exports = function(deployer) {
   });
   deployer.deploy(Register, {
     from: web3.eth.accounts[0], 
-    value: web3.toWei(1000000, 'ether')
+    value: web3.toWei(2500000, 'ether')
   })
 };
