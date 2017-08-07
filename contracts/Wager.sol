@@ -37,13 +37,13 @@ contract Wager {
             rounds[roundNumber].isRoundCashed = true;
             roundNumber++;
             if(roundNumber % 10 == 0) {
-                houseWager++;
+                houseWager += 1;
             }
             rounds[roundNumber].pot += rounds[roundNumber - 1].pot;
             rounds[roundNumber].pot += houseWager;
             RoundOver(rounds[roundNumber].bets[artist], string(songData), 0, (roundNumber - 1), rounds[roundNumber].pot);
             return;
-        }
+        }   
 
         var payout = rounds[roundNumber].pot/rounds[roundNumber].bets[artist].length;
 
@@ -54,7 +54,7 @@ contract Wager {
         rounds[roundNumber].isRoundCashed = true;
         roundNumber++;
         if(roundNumber % 10 == 0) {
-            houseWager++;
+            houseWager += 1;
         }
         rounds[roundNumber].pot += houseWager;
         RoundOver(rounds[roundNumber].bets[artist], string(songData), payout, (roundNumber - 1), rounds[roundNumber].pot);
