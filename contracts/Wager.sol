@@ -7,7 +7,7 @@ contract Wager {
     address public owner = msg.sender;
     uint public roundNumber;
     mapping(uint => Round) rounds;
-    uint public houseWager = 20;
+    uint public houseWager = 20 ether;
 
     struct Round {
         mapping(bytes => address[]) bets;
