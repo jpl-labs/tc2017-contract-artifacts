@@ -4,7 +4,7 @@ require('babel-register')
 module.exports = {
   networks: {
     development: {
-      host: 'kevpquu77.eastus.cloudapp.azure.com',
+      host: 'rockppdcf.eastus.cloudapp.azure.com',
       port: 8545,
       network_id: '*' // Match any network id
     }
